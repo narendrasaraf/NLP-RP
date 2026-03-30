@@ -296,81 +296,60 @@ Reward is **zero at the flow state** and negative for any deviation. The quadrat
 
 ### Requirements
 
-```
-Python 3.8+
-No external dependencies for the prototype (pure stdlib)
-```
-
-For the production LSTM model (optional):
 ```bash
-pip install torch transformers sklearn
+Python 3.10+
+pip install pygame requests streamlit fastapi uvicorn pydantic pandas
 ```
 
 ### Clone / Download
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/narendrasaraf/NLP-RP.git
 cd NLP-RP
 ```
 
 ---
 
-## 9. Running the Demo
+## 9. Running the Complete System
 
+Because this is a real-time multimodal system, you must run three separate processes concurrently. Open three separate terminal windows in the project root:
+
+**Terminal 1: Start the AI Backend (The Brain)**
 ```bash
-python cognitive_instability_prototype.py
+uvicorn backend.main:app --reload --port 8001
 ```
 
-The demo runs **3 simulated scenarios** automatically:
-
-| Scenario | Description | Expected Output |
-|----------|-------------|-----------------|
-| **A — Escalating Frustration** | Player fails repeatedly, text goes from "almost had it" to "I QUIT" | CII falls, difficulty decreases progressively |
-| **B — Boredom Onset** | Player dominates easily, text shifts to "this is boring ngl" | CII rises positively, difficulty held/increased |
-| **C — Stable Flow** | Player is challenged but coping, balanced feedback | CII oscillates near 0, minor corrections only |
-
-### Sample Output
-
+**Terminal 2: Start the Live Analytics Dashboard (The Monitor)**
+```bash
+streamlit run frontend/dashboard.py
 ```
-----------------------------------------------------------------------
-  SCENARIO A - ESCALATING FRUSTRATION
-----------------------------------------------------------------------
 
-[t=01] Text: "almost had it"
-       Polarity=-0.10 | Intensity=0.30 | Deaths=1 | Retries=1
-       CII = +0.0005
-       Probabilities -> Frustrated:  1.74% | Bored:  0.00% | Engaged: 98.26%
-       State  : [OK] ENGAGED
-       Action : [=] MAINTAIN difficulty  (delta=+0.000  ->  D=5.00)
-
-[t=03] Text: "this is impossible"
-       Polarity=-0.60 | Intensity=0.70 | Deaths=5 | Retries=4
-       CII = -0.4830
-       Probabilities -> Frustrated: 68.43% | Bored:  9.57% | Engaged: 22.00%
-       State  : [!!] FRUSTRATED
-       Action : [v] DECREASE difficulty  (delta=+0.742  ->  D=4.26)
+**Terminal 3: Start the Pygame Engine (The Client)**
+```bash
+python -m game.main
 ```
+
+If you place your game window next to your browser window, you will visually see the Streamlit line-chart plotting your Cognitive Instability Index (CII) in real-time as you play!
 
 ---
 
 ## 10. Project Structure
 
-```
+```text
 NLP-RP/
-|
-+-- cognitive_instability_prototype.py   # Main runnable prototype
-|       |
-|       +-- PlayerInput                  # Raw input data structure
-|       +-- EmotionalDynamicsEngine      # Computes E(t), M(t), A(t), CII(t)
-|       +-- PerformanceTracker           # Rolling z-score for D(t)
-|       +-- RuleBasedStatePredictor      # Threshold-based CII -> state
-|       +-- SimulatedLSTMPredictor       # EWA proxy for temporal LSTM
-|       +-- AdaptiveDifficultyController # Difficulty adjustment logic
-|       +-- CognitiveRegulationSystem    # Main orchestrator
-|       +-- run_demo()                   # 3-scenario demo runner
-|       +-- CIILSTMPredictor (ref)       # PyTorch LSTM architecture
-|
-+-- README.md                            # This file
+├── backend/
+│   ├── main.py            # FastAPI REST Endpoint
+│   ├── model.py           # CII Math Engine
+│   ├── predictor.py       # ML Rule Regressor
+│   └── utils.py           # Normalization math
+├── frontend/
+│   └── dashboard.py       # Live Streamlit UI
+├── game/
+│   ├── main.py            # 60 FPS Pygame Loop
+│   ├── api_client.py      # Background Daemon Thread
+│   ├── adaptation.py      # Pygame Physics Scaler
+│   └── entities.py        # Player/Enemy Sprites
+└── README.md
 ```
 
 ---
