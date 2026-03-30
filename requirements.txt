@@ -1,0 +1,10 @@
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.6.0
+pandas>=2.0.0
+numpy>=1.26.0
+streamlit>=1.32.0
+requests>=2.31.0
+# Optional — only needed for production LSTM training
+# torch>=2.2.0
+# transformers>=4.38.0

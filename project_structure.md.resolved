@@ -1,0 +1,291 @@
+# Complete Project Folder Structure
+## Predictive Cognitive State Modeling — Adaptive Game Difficulty Regulation
+
+> Scalable, modular, production-ready layout.
+> Each file entry documents: **purpose**, **contents**, and **dependencies**.
+
+---
+
+## Full Directory Tree
+
+```
+NLP-RP/
+│
+├── app/                            ← FastAPI backend application
+│   ├── __init__.py
+│   ├── main.py                     ← App factory, CORS, route registration
+│   ├── api/                        ← HTTP interface layer
+│   │   ├── __init__.py
+│   │   ├── routes.py               ← All endpoint definitions
+│   │   └── schemas.py              ← Pydantic request/response models
+│   ├── core/                       ← Business logic (CII pipeline)
+│   │   ├── __init__.py
+│   │   ├── config.py               ← System-wide configuration
+│   │   ├── telemetry.py            ← D(t): performance deviation
+│   │   ├── nlp.py                  ← P(t), I(t), G(t): NLP features
+│   │   ├── emotional_dynamics.py   ← E(t), M(t), A(t), CII(t)
+│   │   ├── predictor.py            ← State prediction (blended)
+│   │   └── controller.py          ← Adaptive difficulty controller
+│   └── models/                     ← ML model definitions
+│       ├── __init__.py
+│       └── lstm.py                 ← PyTorch LSTM + trainer
+│
+├── data/                           ← All data assets
+│   ├── raw/                        ← Original, unprocessed inputs
+│   │   ├── telemetry_logs/         ← Game engine telemetry JSON/CSV exports
+│   │   └── player_text/            ← Raw chat/voice transcripts per session
+│   ├── processed/                  ← Cleaned, feature-engineered datasets
+│   │   ├── features.csv            ← Full feature matrix [CII, M, A, D, G, label]
+│   │   └── sequences.npy           ← Pre-built sliding window sequences for LSTM
+│   ├── labeled/                    ← Ground truth annotation files
+│   │   ├── labels.csv              ← [session_id, timestep, state_label]
+│   │   └── annotation_guide.md     ← Labeling protocol and inter-rater rules
+│   └── splits/                     ← Train/val/test dataset splits
+│       ├── train.csv
+│       ├── val.csv
+│       └── test.csv
+│
+├── models/                         ← Saved model checkpoints and artifacts
+│   ├── checkpoints/                ← PyTorch .pt model files
+│   │   ├── lstm_best.pt            ← Best validation loss checkpoint
+│   │   └── lstm_final.pt           ← Final trained model
+│   ├── configs/                    ← Hyperparameter configs per experiment
+│   │   └── lstm_v1.json            ← Experiment config snapshot
+│   └── reports/                    ← Training metrics and eval results
+│       ├── training_curves.png     ← Loss/accuracy plots
+│       └── evaluation_report.json  ← F1, AUC, MCC, Kappa per model
+│
+├── services/                       ← Standalone service scripts (long-running)
+│   ├── __init__.py
+│   ├── data_collector.py           ← Polls game engine API, writes to data/raw/
+│   ├── nlp_service.py              ← Transformer-based NLP inference server
+│   ├── lstm_inference.py           ← Loads lstm.pt, serves predictions via queue
+│   └── session_manager.py          ← Manages lifecycle of multi-player sessions
+│
+├── utils/                          ← Shared utility functions (no business logic)
+│   ├── __init__.py
+│   ├── preprocessing.py            ← Feature normalization, sliding window builder
+│   ├── metrics.py                  ← F1, AUC, MCC, Cohen's Kappa implementations
+│   ├── visualization.py            ← CII trajectory plots, heatmaps
+│   ├── logger.py                   ← Structured logging setup (JSON logs)
+│   └── seed.py                     ← Random seed control for reproducibility
+│
+├── frontend/                       ← All frontend interfaces
+│   ├── dashboard/                  ← Streamlit real-time monitoring dashboard
+│   │   └── app.py                  ← Main dashboard (charts, KPIs, controls)
+│   └── static/                     ← Static HTML/JS demo (optional)
+│       ├── index.html              ← Standalone browser demo
+│       ├── style.css               ← Dashboard styling
+│       └── demo.js                 ← Fetch API calls, chart rendering
+│
+├── tests/                          ← Automated test suite
+│   ├── __init__.py
+│   ├── test_cii_engine.py          ← Unit tests: M(t), A(t), CII computation
+│   ├── test_nlp.py                 ← Unit tests: polarity, intensity extraction
+│   ├── test_telemetry.py           ← Unit tests: z-score, performance tracker
+│   ├── test_predictor.py           ← Unit tests: state prediction correctness
+│   ├── test_controller.py          ← Unit tests: difficulty bounds, reward
+│   └── test_api.py                 ← Integration tests: FastAPI endpoints
+│
+├── notebooks/                      ← Jupyter notebooks for exploration
+│   ├── 01_eda.ipynb                ← Exploratory data analysis
+│   ├── 02_feature_engineering.ipynb← CII derivation and signal analysis
+│   ├── 03_lstm_training.ipynb      ← LSTM training and evaluation
+│   └── 04_rl_simulation.ipynb      ← RL policy simulation and reward curves
+│
+├── docs/                           ← Project documentation
+│   ├── system_design.md            ← Phase 1: Architecture overview
+│   ├── feature_analysis.md         ← Phase 2: Feature importance study
+│   ├── math_model.md               ← Phase 3: E(t), CII formulation
+│   ├── temporal_modeling.md        ← Phase 4: LSTM/Transformer design
+│   ├── rl_evaluation.md            ← Phase 5: RL + evaluation strategy
+│   └── api_reference.md            ← Auto-generated from FastAPI /docs
+│
+├── config/                         ← Environment-specific configuration files
+│   ├── dev.env                     ← Development environment variables
+│   ├── prod.env                    ← Production environment variables
+│   └── logging.yaml                ← Logging levels and output format
+│
+├── cognitive_instability_prototype.py  ← Standalone demo (zero dependencies)
+├── requirements.txt                ← Python dependencies
+├── requirements-dev.txt            ← Dev/test dependencies (pytest, black, etc.)
+├── .gitignore
+└── README.md                       ← Project overview and quickstart
+```
+
+---
+
+## File-by-File Reference
+
+---
+
+### `app/` — FastAPI Backend
+
+| File | Purpose |
+|------|---------|
+| [main.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/main.py) | Creates the FastAPI `app` instance. Registers CORS middleware, mounts the API router at `/api/v1`, and exposes the root health endpoint. Entry point for `uvicorn`. |
+| [api/schemas.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/api/schemas.py) | All Pydantic models: [SessionInput](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/api/schemas.py#39-45), [TelemetryInput](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/api/schemas.py#16-24), [NLPInput](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/api/schemas.py#26-37), [PredictionResponse](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/api/schemas.py#72-85), [SessionSummaryResponse](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/api/schemas.py#93-105). These are the strict data contracts between clients and the backend. |
+| [api/routes.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/api/routes.py) | Five endpoint groups: health check, `/process` (main pipeline), `/session/{id}/summary`, `/session/{id}/reset`, `/sessions` (list). Each route calls the five core module registries in sequence. |
+| [core/config.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/config.py) | Dataclasses for [CIIConfig](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/config.py#11-22) (weights α,β,γ,δ), [PredictorConfig](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/config.py#24-32) (thresholds), [ControllerConfig](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/config.py#34-41) (difficulty bounds), [LSTMConfig](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/config.py#43-53) (hyperparams). A [SystemConfig](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/config.py#62-74) singleton is imported app-wide so there is exactly one source of truth for all parameters. |
+| [core/telemetry.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/telemetry.py) | [PerformanceTracker](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/telemetry.py#28-102): maintains a rolling deque of composite performance scores per session and returns D(t) as a z-score. [TelemetryRegistry](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/telemetry.py#108-131): session-keyed dictionary of trackers for multi-session support. |
+| [core/nlp.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/nlp.py) | [NLPExtractor](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/nlp.py#64-203): rule-based lexicon for polarity and intensity (swap [_compute_polarity()](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/nlp.py#111-139) with a RoBERTa call for production). Maintains sentiment trend history. [NLPRegistry](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/nlp.py#209-222): session management. |
+| [core/emotional_dynamics.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/emotional_dynamics.py) | [EmotionalDynamicsEngine](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/emotional_dynamics.py#50-125): stateful per-session engine. Computes M(t)=P·I, A(t)=ΔM/Δt, CII(t) at every call to `.process()`. Returns [EmotionalState](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/emotional_dynamics.py#26-44) dataclass with `.as_feature_vector()` for LSTM input. |
+| [core/predictor.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py) | [RuleBasedPredictor](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py#115-158): threshold policy. [SimulatedLSTMPredictor](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py#54-109): EWA + linear trend proxy (no PyTorch needed). [CognitiveStatePredictor](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py#164-208): blends both 60/40. [PredictorRegistry](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py#214-225): session management. |
+| [core/controller.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/controller.py) | [AdaptiveDifficultyController](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/cognitive_instability_prototype.py#250-298): applies action (decrease/maintain/increase), scales step by \|CII\|, computes RL reward, logs history. [session_summary()](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/controller.py#158-179) returns aggregate analytics. [ControllerRegistry](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/controller.py#185-200): session management. |
+| [models/lstm.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/models/lstm.py) | [CIILSTMPredictor(nn.Module)](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/models/lstm.py#45-120): 2-layer LSTM → Dropout → Linear(2) → Sigmoid. [CIIDataset](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/models/lstm.py#126-149): sliding-window PyTorch Dataset. [LSTMTrainer](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/models/lstm.py#155-201): training loop with BCE loss and Adam optimizer. Protected by `try/except ImportError` so the system works without PyTorch. |
+
+---
+
+### `data/` — Data Assets
+
+| Path | Purpose |
+|------|---------|
+| `raw/telemetry_logs/` | Game engine exports — one CSV or JSON file per session. Contains: session_id, timestamp, deaths, retries, score_delta, reaction_time_ms, input_speed. Exactly as received from the game client — never modified. |
+| `raw/player_text/` | Raw player chat or voice-to-text transcripts, one file per session. Preserved in original form for NLP reprocessing. |
+| `processed/features.csv` | Feature-engineered dataset built by `utils/preprocessing.py`. Columns: `[session_id, timestep, polarity, intensity, perf_dev, intent_gap, momentum, accel, cii, state_label]`. Input to all classifiers. |
+| `processed/sequences.npy` | Pre-built LSTM input sequences as a NumPy array of shape [(N, W, 5)](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/models/lstm.py#111-120) where W=10 (window) and 5 = `[CII, M, A, D, G]`. Avoids rebuilding windows on every training run. |
+| `labeled/labels.csv` | Ground truth cognitive state labels fused from: self-report (GEQ), behavioral annotation (Cohen's κ ≥ 0.70), and physiological signals. Three output columns: `[is_frustrated, is_bored, is_engaged]`. |
+| `labeled/annotation_guide.md` | Step-by-step protocol for human annotators: coding scheme, OCSGA definitions, inter-rater resolution rules, and examples for edge cases. |
+| `splits/train.csv`, `val.csv`, `test.csv` | Stratified splits of `features.csv` by player ID (not by timestep) to prevent data leakage across sessions. |
+
+---
+
+### `models/` — Saved Artifacts
+
+| Path | Purpose |
+|------|---------|
+| `checkpoints/lstm_best.pt` | PyTorch checkpoint saved at the epoch with lowest validation loss. Contains `state_dict` and `cfg` object. Loaded by `CIILSTMPredictor.load()`. |
+| `checkpoints/lstm_final.pt` | Checkpoint from the final training epoch (may not be the best — kept for reproducibility). |
+| `configs/lstm_v1.json` | Snapshot of hyperparameters used in experiment v1: input_dim, hidden_dim, num_layers, dropout, lr, batch_size, seq_len. Allows exact reproduction. |
+| `reports/training_curves.png` | Loss-per-epoch plot generated by `notebooks/03_lstm_training.ipynb`. |
+| `reports/evaluation_report.json` | Structured JSON with F1 (macro, weighted), ROC-AUC, MCC, and Cohen's κ for all 6 models (5 baselines + proposed). Consumed by Streamlit analytics tab. |
+
+---
+
+### `services/` — Standalone Service Layer
+
+| File | Purpose |
+|------|---------|
+| `data_collector.py` | Polls the game engine API at configurable intervals, normalizes telemetry format, and appends rows to `data/raw/telemetry_logs/`. Runs as a background process or daemon. |
+| `nlp_service.py` | Production NLP inference server. Loads RoBERTa / VADER at startup (once), accepts text via a local queue, returns [(polarity, intensity)](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/models/lstm.py#111-120). Decoupled from FastAPI request cycle to avoid latency. |
+| `lstm_inference.py` | Loads `lstm_best.pt` at startup, accepts feature sequences from a queue, returns [(p_frus, p_bore)](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/models/lstm.py#111-120). Used as a drop-in replacement for [SimulatedLSTMPredictor](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py#54-109) in [predictor.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py). |
+| `session_manager.py` | Manages the full lifecycle of player sessions: creation, heartbeat tracking, idle timeout, memory cleanup. Exposes session health metrics for system monitoring. |
+
+---
+
+### `utils/` — Shared Utilities
+
+| File | Purpose |
+|------|---------|
+| `preprocessing.py` | `build_feature_matrix()`: reads raw CSVs and runs full CII pipeline offline to produce `processed/features.csv`. `build_lstm_sequences()`: sliding window assembler → `sequences.npy`. `normalize()`: min-max and z-score scalers. |
+| `metrics.py` | Pure-Python implementations of evaluation metrics: `f1_macro()`, `f1_weighted()`, `roc_auc_ovr()`, `mcc()`, `cohens_kappa()`. Used in notebooks and evaluation scripts without scikit-learn dependency. |
+| `visualization.py` | `plot_cii_trajectory()`: line chart of CII over session. `plot_state_heatmap()`: 2D heatmap of frustration/boredom probability over time. `plot_difficulty_curve()`: difficulty level timeline. All return `matplotlib.Figure` objects. |
+| `logger.py` | Configures `structlog` or standard `logging` with JSON output format, log rotation, and request-ID injection. Imported by all modules via `from utils.logger import get_logger`. |
+| `seed.py` | `set_seed(n)`: sets Python, NumPy, and PyTorch random seeds simultaneously. Called at the start of every training script and notebook for reproducibility. |
+
+---
+
+### `frontend/` — User Interfaces
+
+| File | Purpose |
+|------|---------|
+| [dashboard/app.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/dashboard/app.py) | Streamlit real-time dashboard. Connects to FastAPI at `localhost:8000`. Renders: CII trend line chart, player state badge, probability bars, difficulty timeline, emotional state component bars, step history table, session summary KPIs. Supports manual input and 3 pre-built auto-scenarios. |
+| `static/index.html` | Standalone browser-based demo that calls the FastAPI directly from JavaScript. No build step required — suitable for quick demonstrations without Streamlit. |
+| `static/style.css` | Dashboard visual styling: dark mode palette, card layout, state-color badges (red=frustrated, amber=bored, green=engaged). |
+| `static/demo.js` | Fetch API wrapper for `/api/v1/process`. Renders Chart.js CII line chart and updates DOM elements with prediction results. |
+
+---
+
+### `tests/` — Test Suite
+
+| File | Purpose |
+|------|---------|
+| `test_cii_engine.py` | Verifies M(t)=P·I, A(t)=ΔM/Δt, CII formula, weight constraint (sum=1.0), and boundary clamping behavior. |
+| `test_nlp.py` | Tests polarity sign correctness for positive/negative text, intensity non-negativity, sentiment trend direction. |
+| `test_telemetry.py` | Tests z-score output during warm-up, correct normalization, and per-session isolation. |
+| `test_predictor.py` | Tests that frustrated input produces state=frustrated, boredom input produces state=bored, blending weights sum correctly. |
+| `test_controller.py` | Tests difficulty clamping at d_min/d_max, action selection logic, reward sign for each state. |
+| `test_api.py` | End-to-end FastAPI integration tests: POST /process returns 200 with correct schema, session summary returns correct aggregate. Uses `httpx.AsyncClient` with `pytest-asyncio`. |
+
+---
+
+### `notebooks/` — Research Notebooks
+
+| File | Purpose |
+|------|---------|
+| `01_eda.ipynb` | Visualizes raw telemetry distributions, class imbalance, NLP feature correlations. Identifies outliers and informs preprocessing decisions. |
+| `02_feature_engineering.ipynb` | Step-by-step derivation of M(t), A(t), D(t), CII(t) from raw data. Plots CII trajectory for each session. Validates the CII formula against human labels. |
+| `03_lstm_training.ipynb` | Full LSTM training pipeline: data loading, model init, training loop, validation, checkpoint saving, evaluation against all 5 baselines. Generates `reports/`. |
+| `04_rl_simulation.ipynb` | Simulates the RL controller over session trajectories. Plots reward over time, flow rate achievement, and difficulty variance. Compares rule-based vs. RL-optimized control. |
+
+---
+
+### `docs/` — Documentation
+
+| File | Purpose |
+|------|---------|
+| [system_design.md](file:///C:/Users/HP/.gemini/antigravity/brain/f2e3a986-b498-4a8f-a83f-10daa5679ef8/phase1_system_design.md) | Phase 1: Complete system architecture, 5-component pipeline, input features, adaptive control overview. |
+| [feature_analysis.md](file:///C:/Users/HP/.gemini/antigravity/brain/f2e3a986-b498-4a8f-a83f-10daa5679ef8/phase2_feature_analysis.md) | Phase 2: Why each feature group matters, multimodal complementarity, 4-scenario disambiguation analysis. |
+| `math_model.md` | Phase 3: Formal definition of E(t), M(t), A(t), CII(t), dynamical systems interpretation, stability regions. |
+| [temporal_modeling.md](file:///C:/Users/HP/.gemini/antigravity/brain/f2e3a986-b498-4a8f-a83f-10daa5679ef8/phase4_temporal_modeling.md) | Phase 4: LSTM vs. Transformer comparison, input sequence design, why temporal modeling beats static models. |
+| `rl_evaluation.md` | Phase 5: MDP formulation, PPO policy, reward function, dataset collection, baselines, F1/AUC/MCC/Kappa, statistical tests. |
+| `api_reference.md` | Auto-generated from FastAPI `/docs` OpenAPI spec. Documents all endpoints, request schemas, response schemas, and error codes. |
+
+---
+
+### `config/` — Environment Configuration
+
+| File | Purpose |
+|------|---------|
+| `dev.env` | `API_HOST=0.0.0.0`, `API_PORT=8000`, `DEBUG=true`, `LOG_LEVEL=DEBUG`. Loaded by `python-dotenv` in development. |
+| `prod.env` | `DEBUG=false`, `LOG_LEVEL=WARNING`, `CORS_ORIGINS=https://yourapp.com`. Never committed to Git. |
+| `logging.yaml` | Configures logging handlers, formatters (JSON), rotation policy, and per-module log levels. |
+
+---
+
+### Root Files
+
+| File | Purpose |
+|------|---------|
+| [cognitive_instability_prototype.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/cognitive_instability_prototype.py) | Self-contained demo script. Zero external dependencies (pure Python stdlib). Runs the full CII + prediction + difficulty adjustment pipeline using simulated inputs. Ideal for offline demo or viva. |
+| [requirements.txt](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/requirements.txt) | Production dependencies: `fastapi`, `uvicorn`, `pydantic`, `pandas`, `numpy`, `streamlit`, `requests`. PyTorch commented out (optional). |
+| `requirements-dev.txt` | Dev/test dependencies: `pytest`, `pytest-asyncio`, `httpx`, `black`, `isort`, `mypy`. |
+| `.gitignore` | Ignores: `__pycache__/`, `.env`, `data/raw/`, `models/checkpoints/`, `*.pyc`, `.DS_Store`. |
+| [README.md](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/README.md) | Project overview, badges, architecture diagram, CII math explanation, feature tables, quickstart commands, sample output, results table, and references. |
+
+---
+
+## Dependency Flow
+
+```
+config.py
+    |
+    ├── telemetry.py ──┐
+    ├── nlp.py ────────┤
+    │                  ├──► emotional_dynamics.py ──► predictor.py ──► controller.py
+    └── (LSTM) ────────┘                                    │
+                                                            ▼
+                                                       routes.py
+                                                            │
+                                                       main.py
+                                                            │
+                                                    ┌───────┴───────┐
+                                              FastAPI              Streamlit
+                                             /api/v1            dashboard/app.py
+```
+
+---
+
+## Scalability Notes
+
+> [!TIP]
+> **Adding a new feature:** Add it to [schemas.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/api/schemas.py) (input) → [telemetry.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/telemetry.py) or [nlp.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/nlp.py) (extraction) → [emotional_dynamics.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/emotional_dynamics.py) (integration into E(t)) → [config.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/config.py) (weight parameter). No other files need changing.
+
+> [!TIP]
+> **Swapping to real NLP model:** Replace only `NLPExtractor._compute_polarity()` and [_compute_intensity()](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/nlp.py#144-177) in [nlp.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/nlp.py). The interface — returning a [dict](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py#127-158) with [polarity](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/api/schemas.py#33-37), [intensity](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/nlp.py#144-177), `sentiment_trend`, `intent_gap` — stays identical.
+
+> [!TIP]
+> **Enabling the real LSTM:** Set `lstm_inference.py` as a subprocess service, import `CIILSTMPredictor.load()` in [predictor.py](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py), and replace [SimulatedLSTMPredictor](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py#54-109). The blending logic in [CognitiveStatePredictor](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/predictor.py#164-208) is unchanged.
+
+> [!NOTE]
+> **Multi-player scaling:** Every registry ([TelemetryRegistry](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/telemetry.py#108-131), [NLPRegistry](file:///f:/B.Tech%20CSE%28AIML%29%20VIIT/SEM%206/NLP-RP/app/core/nlp.py#209-222), etc.) is already keyed by `session_id`. Replace the in-memory dicts with Redis-backed stores for distributed multi-server deployment.

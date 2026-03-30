@@ -9,7 +9,7 @@
 
 **A system that predicts a player's future cognitive state using emotional and behavioral data, and dynamically adjusts game difficulty to maintain optimal engagement.**
 
-*B.Tech CSE (AIML) — SEM 6 | NLP Research Project*
+
 
 </div>
 
@@ -406,7 +406,6 @@ NLP-RP/
 
 <div align="center">
 
-**B.Tech CSE (AIML) | SEM 6 | NLP Research Project**
 
 *"Our system shifts from reactive difficulty adjustment to predictive cognitive regulation using temporal emotional modeling."*
 
