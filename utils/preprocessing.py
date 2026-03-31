@@ -274,10 +274,17 @@ class StandaloneNLPExtractor:
         intensity = validated_nlp["intensity"]
         intent_gap = validated_nlp["intent_gap"]
 
-        # Only use lexicon if no real polarity was provided
+        # Only use analyzer if no real polarity was provided
         if text and polarity == 0.0:
-            polarity  = self._polarity(text)
-            intensity = self._intensity(text, polarity)
+            # Integrate the real-time EmotionAnalyzer
+            from utils.emotion_analyzer import emotion_analyzer
+            analysis = emotion_analyzer.analyze(text)
+            polarity  = analysis["polarity"]
+            intensity = analysis["intensity"]
+            # Expose new probabilities to the raw_nlp payload for downstream visibility
+            validated_nlp["anger_prob"] = analysis["anger"]
+            validated_nlp["frustration_prob"] = analysis["frustration"]
+            validated_nlp["confidence_prob"] = analysis["confidence"]
 
         return {
             "polarity":  round(max(-1.0, min(1.0, polarity)),  4),

@@ -28,6 +28,7 @@ class GameAPIClient:
         """Asynchronously dispatch data to the new lightweight API."""
         full_payload = {
             "telemetry": telemetry_payload.get("telemetry", {}),
+            "chat": telemetry_payload.get("chat", ""),
             "nlp": telemetry_payload.get("nlp", {})
         }
         self.request_queue.put(full_payload)

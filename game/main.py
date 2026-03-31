@@ -56,6 +56,10 @@ def main():
     # Spawn timers
     spawn_rate = 90  # frames between spawns (lower = harder)
     spawn_timer = 0  # accrues per frame
+    
+    # NLP Chat Tracker
+    chat_input = ""
+    latest_chat_message = ""
 
     # ── Main Loop ────────────────────────────────────────────────────────────
     running = True
@@ -79,6 +83,19 @@ def main():
                     all_sprites.add(bullet)
                     bullets.add(bullet)
 
+                # Seamless Chat Recording (non-blocking)
+                if event.key == pygame.K_RETURN:
+                    if chat_input.strip():
+                        if latest_chat_message:
+                            latest_chat_message += " | " + chat_input
+                        else:
+                            latest_chat_message = chat_input
+                    chat_input = ""
+                elif event.key == pygame.K_BACKSPACE:
+                    chat_input = chat_input[:-1]
+                elif event.unicode.isprintable() and event.unicode != "":
+                    chat_input += event.unicode
+                    
         # 2. Logic Update
         keys = pygame.key.get_pressed()
         player.update(keys)
@@ -138,11 +155,15 @@ def main():
                     "reaction_time": round(avg_reaction, 2),
                     "score": score
                 },
+                "chat": latest_chat_message,  # Send the captured string
                 "nlp": {
                     "polarity": round(simulated_polarity, 2),
                     "emotional_intensity": round(simulated_intensity, 2)
                 }
             }
+            
+            # Clear the localized message buffer safely
+            latest_chat_message = ""
             
             # Dispatch payload seamlessly to backend thread (no game freezing!)
             api.send_telemetry(telemetry_snapshot)
@@ -174,7 +195,7 @@ def main():
         avg_hud = sum(reaction_times[-5:]) / 5 if len(reaction_times) >= 5 else 0.0
         hud_lines = [
             f"Score: {score}  (Kills:{kill_count} D:{death_count} M:{miss_count})",
-            "",
+            f"Chat Input: {chat_input}",
             f"CII Score: {ai_cii:+.3f}",
             f"Player State: {ai_state}",
             f"Difficulty Level: {game_speed:.2f}x"
