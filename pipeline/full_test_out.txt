@@ -1,0 +1,418 @@
+﻿
+==============================================================================
+  NLP + RL ADAPTIVE GAME SYSTEM ù INTEGRATION TEST
+  7 test messages  |  NLP=Rule-Based  |  RL=Q-Learning  |  Temporal=EMA(alpha=0.35, window=5)
+==============================================================================
+[GamePipeline] Ready | NLP=rule-based | RL=Q-learning(alpha=0.15, gamma=0.9) | difficulty=5.0 | temporal_window=5
+[22:25:55.129] #  1  sent=-0.333  em=frustration   frus=0.324 (LOW )  [^] INC  diff=5.0->6.0  rew=+0.170
+
+==============================================================================
+  STEP 1  |  Message 1 of 7
+==============================================================================
+  Chat Message   : 'This level is impossible'
+  Cleaned        : 'This level is impossible'
+------------------------------------------------------------------------------
+  Sentiment Score : ........###-----------  -0.333
+  Sentiment Label : NEGATIVE
+
+  Emotion Label   : FRUSTRATION
+  Emotion Breakdown:
+    anger          [....................] 0.017
+    frustration    [##################..] 0.920 <--
+    joy            [....................] 0.017
+    neutral        [....................] 0.046
+------------------------------------------------------------------------------
+  Frustration Score (raw)     : [#######.................] 0.324
+  Smoothed Frustration (EMA)  : [#######.................] 0.324
+  Moving Average  (window=1)  : [#######.................] 0.324
+  Temporal Window             : 0.324
+
+  Frustration Level : [ LOW  ]
+------------------------------------------------------------------------------
+  Q-Learning Action : [^] INCREASE
+  Difficulty        : 5.0  ->  6.0  (delta=+1.0)
+  Difficulty Bar    : [############........] 6.0/10
+  Reward            : +0.1704
+  TD-Error          : 0.17038
+  Epsilon           : 0.1960
+------------------------------------------------------------------------------
+  Q-TABLE (current state):
+  State                 INC          DEC          NOP     Best
+  ---------- ------------ ------------ ------------ --------
+  LOW               +0.0256      +0.0000      +0.0000      INC
+  MODERATE          +0.0000      +0.0000      +0.0000      INC
+  HIGH              +0.0000      +0.0000      +0.0000      INC
+
+  Optimal Policy:
+    LOW        ->  increase_difficulty
+    MODERATE   ->  increase_difficulty
+    HIGH       ->  increase_difficulty
+==============================================================================
+[22:25:55.129] #  2  sent=-0.333  em=frustration   frus=0.332 (LOW )  [^] INC  diff=6.0->7.0  rew=+0.117
+
+==============================================================================
+  STEP 2  |  Message 2 of 7
+==============================================================================
+  Chat Message   : 'I keep losing again and again'
+  Cleaned        : 'I keep losing again and again'
+------------------------------------------------------------------------------
+  Sentiment Score : ........###-----------  -0.333
+  Sentiment Label : NEGATIVE
+
+  Emotion Label   : FRUSTRATION
+  Emotion Breakdown:
+    anger          [....................] 0.010
+    frustration    [###################.] 0.967 <--
+    joy            [....................] 0.010
+    neutral        [....................] 0.014
+------------------------------------------------------------------------------
+  Frustration Score (raw)     : [#######.................] 0.332
+  Smoothed Frustration (EMA)  : [#######.................] 0.327
+  Moving Average  (window=2)  : [#######.................] 0.328
+  Temporal Window             : 0.324  0.332
+
+  Frustration Level : [ LOW  ]
+------------------------------------------------------------------------------
+  Q-Learning Action : [^] INCREASE
+  Difficulty        : 6.0  ->  7.0  (delta=+1.0)
+  Difficulty Bar    : [##############......] 7.0/10
+  Reward            : +0.1169
+  TD-Error          : 0.11434
+  Epsilon           : 0.1921
+------------------------------------------------------------------------------
+  Q-TABLE (current state):
+  State                 INC          DEC          NOP     Best
+  ---------- ------------ ------------ ------------ --------
+  LOW               +0.0427      +0.0000      +0.0000      INC
+  MODERATE          +0.0000      +0.0000      +0.0000      INC
+  HIGH              +0.0000      +0.0000      +0.0000      INC
+
+  Optimal Policy:
+    LOW        ->  increase_difficulty
+    MODERATE   ->  no_change
+    HIGH       ->  decrease_difficulty
+==============================================================================
+[22:25:55.130] #  3  sent=+0.333  em=neutral       frus=0.079 (LOW )  [^] INC  diff=7.0->8.0  rew=+0.483
+
+==============================================================================
+  STEP 3  |  Message 3 of 7
+==============================================================================
+  Chat Message   : 'Okay this is getting better'
+  Cleaned        : 'Okay this is getting better'
+------------------------------------------------------------------------------
+  Sentiment Score : -----------###........  +0.333
+  Sentiment Label : POSITIVE
+
+  Emotion Label   : NEUTRAL
+  Emotion Breakdown:
+    anger          [###.................] 0.175
+    frustration    [###.................] 0.175
+    joy            [###.................] 0.175
+    neutral        [#########...........] 0.475 <--
+------------------------------------------------------------------------------
+  Frustration Score (raw)     : [#.......................] 0.079
+  Smoothed Frustration (EMA)  : [#####...................] 0.240
+  Moving Average  (window=3)  : [#####...................] 0.245
+  Temporal Window             : 0.324  0.332  0.079
+
+  Frustration Level : [ LOW  ]
+------------------------------------------------------------------------------
+  Q-Learning Action : [^] INCREASE
+  Difficulty        : 7.0  ->  8.0  (delta=+1.0)
+  Difficulty Bar    : [################....] 8.0/10
+  Reward            : +0.4828
+  TD-Error          : 0.47857
+  Epsilon           : 0.1882
+------------------------------------------------------------------------------
+  Q-TABLE (current state):
+  State                 INC          DEC          NOP     Best
+  ---------- ------------ ------------ ------------ --------
+  LOW               +0.1145      +0.0000      +0.0000      INC
+  MODERATE          +0.0000      +0.0000      +0.0000      INC
+  HIGH              +0.0000      +0.0000      +0.0000      INC
+
+  Optimal Policy:
+    LOW        ->  increase_difficulty
+    MODERATE   ->  increase_difficulty
+    HIGH       ->  no_change
+==============================================================================
+[22:25:55.130] #  4  sent=+0.500  em=joy           frus=0.004 (LOW )  [^] INC  diff=8.0->9.0  rew=+0.742
+
+==============================================================================
+  STEP 4  |  Message 4 of 7
+==============================================================================
+  Chat Message   : 'Nice, I finally won'
+  Cleaned        : 'Nice, I finally won'
+------------------------------------------------------------------------------
+  Sentiment Score : -----------#####......  +0.500
+  Sentiment Label : POSITIVE
+
+  Emotion Label   : JOY
+  Emotion Breakdown:
+    anger          [....................] 0.008
+    frustration    [....................] 0.008
+    joy            [###################.] 0.975 <--
+    neutral        [....................] 0.009
+------------------------------------------------------------------------------
+  Frustration Score (raw)     : [........................] 0.004
+  Smoothed Frustration (EMA)  : [###.....................] 0.157
+  Moving Average  (window=4)  : [####....................] 0.184
+  Temporal Window             : 0.324  0.332  0.079  0.004
+
+  Frustration Level : [ LOW  ]
+------------------------------------------------------------------------------
+  Q-Learning Action : [^] INCREASE
+  Difficulty        : 8.0  ->  9.0  (delta=+1.0)
+  Difficulty Bar    : [##################..] 9.0/10
+  Reward            : +0.7415
+  TD-Error          : 0.73005
+  Epsilon           : 0.1845
+------------------------------------------------------------------------------
+  Q-TABLE (current state):
+  State                 INC          DEC          NOP     Best
+  ---------- ------------ ------------ ------------ --------
+  LOW               +0.2240      +0.0000      +0.0000      INC
+  MODERATE          +0.0000      +0.0000      +0.0000      INC
+  HIGH              +0.0000      +0.0000      +0.0000      INC
+
+  Optimal Policy:
+    LOW        ->  increase_difficulty
+    MODERATE   ->  increase_difficulty
+    HIGH       ->  decrease_difficulty
+==============================================================================
+[22:25:55.131] #  5  sent=+0.000  em=frustration   frus=0.100 (LOW )  [^] INC  diff=9.0->10.0  rew=+0.285
+
+==============================================================================
+  STEP 5  |  Message 5 of 7
+==============================================================================
+  Chat Message   : 'Game is fun but still hard'
+  Cleaned        : 'Game is fun but still hard'
+------------------------------------------------------------------------------
+  Sentiment Score : -----------...........  +0.000
+  Sentiment Label : NEUTRAL
+
+  Emotion Label   : FRUSTRATION
+  Emotion Breakdown:
+    anger          [....................] 0.047
+    frustration    [########............] 0.435 <--
+    joy            [########............] 0.435
+    neutral        [#...................] 0.082
+------------------------------------------------------------------------------
+  Frustration Score (raw)     : [##......................] 0.100
+  Smoothed Frustration (EMA)  : [###.....................] 0.137
+  Moving Average  (window=5)  : [####....................] 0.168
+  Temporal Window             : 0.324  0.332  0.079  0.004  0.100
+
+  Frustration Level : [ LOW  ]
+------------------------------------------------------------------------------
+  Q-Learning Action : [^] INCREASE
+  Difficulty        : 9.0  ->  10.0  (delta=+1.0)
+  Difficulty Bar    : [####################] 10.0/10
+  Reward            : +0.2855
+  TD-Error          : 0.26306
+  Epsilon           : 0.1808
+------------------------------------------------------------------------------
+  Q-TABLE (current state):
+  State                 INC          DEC          NOP     Best
+  ---------- ------------ ------------ ------------ --------
+  LOW               +0.2635      +0.0000      +0.0000      INC
+  MODERATE          +0.0000      +0.0000      +0.0000      INC
+  HIGH              +0.0000      +0.0000      +0.0000      INC
+
+  Optimal Policy:
+    LOW        ->  increase_difficulty
+    MODERATE   ->  no_change
+    HIGH       ->  decrease_difficulty
+==============================================================================
+[22:25:55.131] #  6  sent=-0.429  em=frustration   frus=0.360 (LOW )  [^] INC  diff=10.0->10.0  rew=-0.043
+
+==============================================================================
+  STEP 6  |  Message 6 of 7
+==============================================================================
+  Chat Message   : 'Bro this is so annoying'
+  Cleaned        : 'Bro this is so annoying'
+------------------------------------------------------------------------------
+  Sentiment Score : .......####-----------  -0.429
+  Sentiment Label : NEGATIVE
+
+  Emotion Label   : FRUSTRATION
+  Emotion Breakdown:
+    anger          [##..................] 0.143
+    frustration    [###############.....] 0.759 <--
+    joy            [....................] 0.036
+    neutral        [#...................] 0.062
+------------------------------------------------------------------------------
+  Frustration Score (raw)     : [########................] 0.360
+  Smoothed Frustration (EMA)  : [#####...................] 0.215
+  Moving Average  (window=5)  : [####....................] 0.175
+  Temporal Window             : 0.332  0.079  0.004  0.100  0.360
+
+  Frustration Level : [ LOW  ]
+------------------------------------------------------------------------------
+  Q-Learning Action : [^] INCREASE
+  Difficulty        : 10.0  ->  10.0  (delta=+0.0)
+  Difficulty Bar    : [####################] 10.0/10
+  Reward            : -0.0426
+  TD-Error          : 0.06895
+  Epsilon           : 0.1772
+------------------------------------------------------------------------------
+  Q-TABLE (current state):
+  State                 INC          DEC          NOP     Best
+  ---------- ------------ ------------ ------------ --------
+  LOW               +0.2531      +0.0000      +0.0000      INC
+  MODERATE          +0.0000      +0.0000      +0.0000      INC
+  HIGH              +0.0000      +0.0000      +0.0000      INC
+
+  Optimal Policy:
+    LOW        ->  increase_difficulty
+    MODERATE   ->  decrease_difficulty
+    HIGH       ->  increase_difficulty
+==============================================================================
+[22:25:55.131] #  7  sent=+0.333  em=neutral       frus=0.079 (LOW )  [^] INC  diff=10.0->10.0  rew=+0.403
+
+==============================================================================
+  STEP 7  |  Message 7 of 7
+==============================================================================
+  Chat Message   : 'Alright I think I got it now'
+  Cleaned        : 'Alright I think I got it now'
+------------------------------------------------------------------------------
+  Sentiment Score : -----------###........  +0.333
+  Sentiment Label : POSITIVE
+
+  Emotion Label   : NEUTRAL
+  Emotion Breakdown:
+    anger          [###.................] 0.175
+    frustration    [###.................] 0.175
+    joy            [###.................] 0.175
+    neutral        [#########...........] 0.475 <--
+------------------------------------------------------------------------------
+  Frustration Score (raw)     : [#.......................] 0.079
+  Smoothed Frustration (EMA)  : [####....................] 0.168
+  Moving Average  (window=5)  : [##......................] 0.124
+  Temporal Window             : 0.079  0.004  0.100  0.360  0.079
+
+  Frustration Level : [ LOW  ]
+------------------------------------------------------------------------------
+  Q-Learning Action : [^] INCREASE
+  Difficulty        : 10.0  ->  10.0  (delta=+0.0)
+  Difficulty Bar    : [####################] 10.0/10
+  Reward            : +0.4028
+  TD-Error          : 0.37753
+  Epsilon           : 0.1736
+------------------------------------------------------------------------------
+  Q-TABLE (current state):
+  State                 INC          DEC          NOP     Best
+  ---------- ------------ ------------ ------------ --------
+  LOW               +0.3097      +0.0000      +0.0000      INC
+  MODERATE          +0.0000      +0.0000      +0.0000      INC
+  HIGH              +0.0000      +0.0000      +0.0000      INC
+
+  Optimal Policy:
+    LOW        ->  increase_difficulty
+    MODERATE   ->  decrease_difficulty
+    HIGH       ->  no_change
+==============================================================================
+
+==============================================================================
+  FRUSTRATION EVOLUTION OVER TIME
+==============================================================================
+  #   Message                                    Raw     EMA      MA Level        Action            Diff
+  --- -------------------------------------- ------- ------- ------- ------------ --------------- ------
+  1   This level is impossible                 0.324   0.324   0.324 LOW          INCREASE          6.0  [^]
+  2   I keep losing again and again            0.332   0.327   0.328 LOW          INCREASE          7.0  [^]
+  3   Okay this is getting better              0.079   0.240   0.245 LOW          INCREASE          8.0  [^]
+  4   Nice, I finally won                      0.004   0.157   0.184 LOW          INCREASE          9.0  [^]
+  5   Game is fun but still hard               0.100   0.137   0.168 LOW          INCREASE         10.0  [^]
+  6   Bro this is so annoying                  0.360   0.215   0.175 LOW          INCREASE         10.0  [=]
+  7   Alright I think I got it now             0.079   0.168   0.124 LOW          INCREASE         10.0  [=]
+==============================================================================
+
+==============================================================================
+  FRUSTRATION CHART  (raw vs EMA smoothed)
+  Steps: 7    Window: 5 messages    EMA alpha: 0.35
+==============================================================================
+
+  RAW frustration (per message):
+    [#########.....................] 0.324     [#########.....................] 0.332     [##............................] 0.079     [..............................] 0.004     [##............................] 0.100     [##########....................] 0.360     [##............................] 0.079 
+
+  EMA smoothed (alpha=0.35, window visible):
+    [*********.....................] 0.324     [*********.....................] 0.327     [*******.......................] 0.240     [****..........................] 0.157     [****..........................] 0.137     [******........................] 0.215     [*****.........................] 0.168 
+
+  Moving Average (window=5):
+    [+++++++++.....................] 0.324     [+++++++++.....................] 0.328     [+++++++.......................] 0.245     [+++++.........................] 0.184     [+++++.........................] 0.168     [+++++.........................] 0.175     [+++...........................] 0.124 
+
+  Step          1      2      3      4      5      6      7
+  Raw       0.324  0.332  0.079  0.004  0.100  0.360  0.079
+  EMA       0.324  0.327  0.240  0.157  0.137  0.215  0.168
+  MA        0.324  0.328  0.245  0.184  0.168  0.175  0.124
+
+  Level thresholds:  LOW < 0.33 <= MODERATE < 0.67 <= HIGH
+
+  State       LOW    LOW    LOW    LOW    LOW    LOW    LOW
+  Action      INC    INC    INC    INC    INC    INC    INC
+==============================================================================
+
+==============================================================================
+  ACTION TIMELINE  -- Difficulty Evolution
+==============================================================================
+  Step  Action       Symbol     Prev    New   Delta Note
+  ----- ------------ -------- ------ ------ ------- ------------------------------
+  1     increase     [^]         5.0    6.0    +1.0     Difficulty increased (low frustration)
+  2     increase     [^]         6.0    7.0    +1.0     Difficulty increased (low frustration)
+  3     increase     [^]         7.0    8.0    +1.0     Difficulty increased (low frustration)
+  4     increase     [^]         8.0    9.0    +1.0     Difficulty increased (low frustration)
+  5     increase     [^]         9.0   10.0    +1.0     Difficulty increased (low frustration)
+  6     increase     [^]        10.0   10.0    +0.0  
+  7     increase     [^]        10.0   10.0    +0.0  
+------------------------------------------------------------------------------
+  Decreases (difficulty reduced)  : 0
+  Increases (difficulty raised)   : 5
+  No change (maintained)          : 2
+  Difficulty range                : 6.0 -- 10.0
+==============================================================================
+
+==============================================================================
+  FINAL Q-TABLE  (after all 7 messages)
+==============================================================================
+  State                   INC            DEC            NOP Best Action
+  ------------ -------------- -------------- -------------- --------------------
+  LOW                +0.30975       +0.00000       +0.00000  increase_difficulty
+  MODERATE           +0.00000       +0.00000       +0.00000  increase_difficulty
+  HIGH               +0.00000       +0.00000       +0.00000  increase_difficulty
+
+  OPTIMAL POLICY:
+  Frustration State      Best Action
+  ---------------------- ------------------------------
+  LOW                    [^] increase_difficulty  (raise difficulty)
+  MODERATE               [v] decrease_difficulty  (reduce difficulty)
+  HIGH                   [=] no_change  (keep stable)
+==============================================================================
+
+================================================================
+  SESSION SUMMARY
+================================================================
+  Total steps       : 7
+  Avg reward        : +0.3082
+  Total reward      : +2.1573
+  Avg frustration   : 0.1824
+  Avg sentiment     : +0.0102
+  Final difficulty  : 10.0
+  Difficulty range  : 4.00
+  Sarcasm events    : 0
+  Action breakdown  :
+    increase_difficulty          #################################   7  (100%)
+    decrease_difficulty                                              0  (0%)
+    no_change                                                        0  (0%)
+  Emotion breakdown :
+    frustration      4
+    neutral          2
+    joy              1
+================================================================
+
+==============================================================================
+  TEST COMPLETE
+  All 7 messages processed successfully.
+  Pipeline NLP model : rule_based_fallback
+  Final difficulty   : 10.0/10
+  Total RL steps     : 7
+==============================================================================
