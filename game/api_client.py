@@ -10,7 +10,7 @@ import threading
 import queue
 import requests
 
-API_URL = "http://localhost:8001/predict"
+API_URL = "http://127.0.0.1:8001/predict"
 
 class GameAPIClient:
     def __init__(self, session_id: str):

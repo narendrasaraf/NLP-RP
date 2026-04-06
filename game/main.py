@@ -14,6 +14,7 @@ import uuid
 from game.entities import Player, Bullet, Enemy, SCREEN_WIDTH, SCREEN_HEIGHT
 from game.api_client import GameAPIClient
 from game.adaptation import calculate_new_speed
+from game.chat import ChatSystem  # NEW: real-time chat module
 
 def main():
     # ── Pygame Init ──────────────────────────────────────────────────────────
@@ -57,9 +58,8 @@ def main():
     spawn_rate = 90  # frames between spawns (lower = harder)
     spawn_timer = 0  # accrues per frame
     
-    # NLP Chat Tracker
-    chat_input = ""
-    latest_chat_message = ""
+    # NLP Chat System  (replaces bare chat_input / latest_chat_message stubs)
+    chat = ChatSystem()
 
     # ── Main Loop ────────────────────────────────────────────────────────────
     running = True
@@ -68,33 +68,27 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                
-            elif event.type == pygame.KEYDOWN:
+                continue
+
+            # ── Chat system gets first pick of keyboard events ────────────────
+            # If chat consumes the event (returns True) skip game-level handling.
+            if chat.handle_event(event):
+                continue
+
+            # ── Game-level key handling (only reached when chat is NOT active) ─
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    # Record reaction time (Time since last shot)
+                    # Record reaction time (time since last shot)
                     now = time.time()
-                    reaction = (now - last_shot_time) * 1000 # convert to ms
-                    if reaction < 5000: # Ignore breaks in playing
+                    reaction = (now - last_shot_time) * 1000  # convert to ms
+                    if reaction < 5000:  # ignore long breaks
                         reaction_times.append(reaction)
                     last_shot_time = now
-                    
+
                     # Spawn bullet
                     bullet = Bullet(player.rect.centerx, player.rect.top)
                     all_sprites.add(bullet)
                     bullets.add(bullet)
-
-                # Seamless Chat Recording (non-blocking)
-                if event.key == pygame.K_RETURN:
-                    if chat_input.strip():
-                        if latest_chat_message:
-                            latest_chat_message += " | " + chat_input
-                        else:
-                            latest_chat_message = chat_input
-                    chat_input = ""
-                elif event.key == pygame.K_BACKSPACE:
-                    chat_input = chat_input[:-1]
-                elif event.unicode.isprintable() and event.unicode != "":
-                    chat_input += event.unicode
                     
         # 2. Logic Update
         keys = pygame.key.get_pressed()
@@ -146,7 +140,11 @@ def main():
             simulated_polarity = random.uniform(-1.0, 1.0)
             simulated_intensity = random.uniform(0.0, 1.0)
             
-            # Build requested dictionary format
+            # Build telemetry payload
+            # chat.pop_latest() atomically returns the last sent message and
+            # resets it — guaranteed non-None, safe even if no message was sent.
+            chat_payload = chat.pop_latest()  # "" when no message
+
             telemetry_snapshot = {
                 "telemetry": {
                     "kill_count": kill_count,
@@ -155,15 +153,12 @@ def main():
                     "reaction_time": round(avg_reaction, 2),
                     "score": score
                 },
-                "chat": latest_chat_message,  # Send the captured string
+                "chat": chat_payload,          # always a str, never None
                 "nlp": {
                     "polarity": round(simulated_polarity, 2),
                     "emotional_intensity": round(simulated_intensity, 2)
                 }
             }
-            
-            # Clear the localized message buffer safely
-            latest_chat_message = ""
             
             # Dispatch payload seamlessly to backend thread (no game freezing!)
             api.send_telemetry(telemetry_snapshot)
@@ -193,22 +188,25 @@ def main():
         all_sprites.draw(screen)
 
         avg_hud = sum(reaction_times[-5:]) / 5 if len(reaction_times) >= 5 else 0.0
+        # Chat Input line removed from HUD — now rendered by chat.draw() below
         hud_lines = [
             f"Score: {score}  (Kills:{kill_count} D:{death_count} M:{miss_count})",
-            f"Chat Input: {chat_input}",
             f"CII Score: {ai_cii:+.3f}",
             f"Player State: {ai_state}",
             f"Difficulty Level: {game_speed:.2f}x"
         ]
-        
+
         # Draw HUD block
-        hud_bg = pygame.Surface((340, 160))
+        hud_bg = pygame.Surface((340, 130))
         hud_bg.set_alpha(150)
         screen.blit(hud_bg, (10, 10))
-        
+
         for i, text in enumerate(hud_lines):
             text_surface = font.render(text, True, (255, 255, 255))
             screen.blit(text_surface, (20, 20 + (i * 25)))
+
+        # ── Chat UI overlay (history panel + input box) ───────────────────────
+        chat.draw(screen)
 
         pygame.display.flip()
         clock.tick(60) # Lock to 60 FPS

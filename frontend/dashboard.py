@@ -14,8 +14,8 @@ import pandas as pd
 import time
 
 # Pointed at the standalone backend port
-HISTORY_URL = "http://localhost:8001/history"
-LATEST_URL = "http://localhost:8001/latest"
+HISTORY_URL = "http://127.0.0.1:8001/history"
+LATEST_URL = "http://127.0.0.1:8001/latest"
 
 st.set_page_config(page_title="Live Game AI", page_icon="🧠", layout="wide")
 
