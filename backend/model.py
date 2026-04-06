@@ -26,8 +26,14 @@ def compute_cii(telemetry: dict, nlp: dict):
     kills  = telemetry.get("kill_count", 0)
     D = deaths + misses - kills
     
-    # 4. Compute: CII = 0.5*M + 0.3*A + 0.2*D
-    cii = (0.5 * M) + (0.3 * A) + (0.2 * D)
+    # 4. Intent Gap (G): Mismatch between NLP confidence and actual performance.
+    # If confidence is high but performance is poor (high D), the cognitive friction (G) is high.
+    confidence = nlp.get("confidence_score", 0.5)
+    G = confidence * max(0.0, D)
+    
+    # 5. Compute: CII = weighted sum
+    # High M/A (positive) drive engagement/boredom, but high Intent Gap drives instability (negative).
+    cii = (0.4 * M) + (0.3 * A) + (0.2 * D) - (0.2 * G)
     
     # Ensure previous state is stored correctly for the next API call
     _previous_momentum = M

@@ -10,7 +10,7 @@ import threading
 import queue
 import requests
 
-API_URL = "http://localhost:8001/predict"
+API_URL = "http://127.0.0.1:8001/predict"
 
 class GameAPIClient:
     def __init__(self, session_id: str):
@@ -28,6 +28,7 @@ class GameAPIClient:
         """Asynchronously dispatch data to the new lightweight API."""
         full_payload = {
             "telemetry": telemetry_payload.get("telemetry", {}),
+            "chat": telemetry_payload.get("chat", ""),
             "nlp": telemetry_payload.get("nlp", {})
         }
         self.request_queue.put(full_payload)

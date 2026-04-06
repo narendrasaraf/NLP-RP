@@ -83,8 +83,15 @@ class NLPExtractor:
         text = nlp_input.text.strip()
 
         if text:
-            polarity  = self._compute_polarity(text)
-            intensity = self._compute_intensity(text, polarity)
+            # Integrate the real-time EmotionAnalyzer
+            from utils.emotion_analyzer import emotion_analyzer
+            analysis = emotion_analyzer.analyze(text)
+            polarity  = analysis["polarity"]
+            intensity = analysis["intensity"]
+            # Optional: these can be stored for future use
+            anger_prob = analysis["anger"]
+            frust_prob = analysis["frustration"]
+            conf_prob = analysis["confidence"]
         else:
             # Fallback to pre-computed values provided by caller
             polarity  = nlp_input.polarity
