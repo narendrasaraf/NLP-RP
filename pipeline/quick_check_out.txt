@@ -1,0 +1,46 @@
+﻿[GamePipeline] Ready | NLP=rule-based | RL=Q-learning(alpha=0.15, gamma=0.9) | difficulty=5.0 | temporal_window=5
+[22:25:11.802] #  1  sent=-0.333  em=frustration   frus=0.324 (LOW )  [^] INC  diff=5.0->6.0  rew=+0.170
+[22:25:11.802] #  2  sent=-0.333  em=frustration   frus=0.332 (LOW )  [^] INC  diff=6.0->7.0  rew=+0.117
+[22:25:11.802] #  3  sent=+0.333  em=neutral       frus=0.079 (LOW )  [^] INC  diff=7.0->8.0  rew=+0.483
+[22:25:11.803] #  4  sent=+0.500  em=joy           frus=0.004 (LOW )  [^] INC  diff=8.0->9.0  rew=+0.742
+[22:25:11.803] #  5  sent=+0.000  em=frustration   frus=0.100 (LOW )  [^] INC  diff=9.0->10.0  rew=+0.285
+[22:25:11.803] #  6  sent=-0.429  em=frustration   frus=0.360 (LOW )  [^] INC  diff=10.0->10.0  rew=-0.043
+[22:25:11.804] #  7  sent=+0.333  em=neutral       frus=0.079 (LOW )  [^] INC  diff=10.0->10.0  rew=+0.403
+
+====================================================================================================
+  INTEGRATION TEST ù 7 MESSAGE RESULTS SUMMARY
+====================================================================================================
+#   Message                               Sent Emotion          Raw F   EMA F   MA F Level      Action                       Diff
+----------------------------------------------------------------------------------------------------
+1   This level is impossible            -0.333 frustration      0.324   0.324  0.324 LOW        [^] INCREASE                   6.0 <-- RAISED
+2   I keep losing again and again       -0.333 frustration      0.332   0.327  0.328 LOW        [^] INCREASE                   7.0 <-- RAISED
+3   Okay this is getting better         +0.333 neutral          0.079   0.240  0.245 LOW        [^] INCREASE                   8.0 <-- RAISED
+4   Nice, I finally won                 +0.500 joy              0.004   0.157  0.184 LOW        [^] INCREASE                   9.0 <-- RAISED
+5   Game is fun but still hard          +0.000 frustration      0.100   0.137  0.168 LOW        [^] INCREASE                  10.0 <-- RAISED
+6   Bro this is so annoying             -0.429 frustration      0.360   0.215  0.175 LOW        [^] INCREASE                  10.0
+7   Alright I think I got it now        +0.333 neutral          0.079   0.168  0.124 LOW        [^] INCREASE                  10.0
+====================================================================================================
+
+  TEMPORAL FRUSTRATION EVOLUTION
+  Step    s1       s2       s3       s4       s5       s6       s7     
+  Raw     0.324    0.332    0.079    0.004    0.100    0.360    0.079  
+  EMA     0.324    0.327    0.240    0.157    0.137    0.215    0.168  
+  MA      0.324    0.328    0.245    0.184    0.168    0.175    0.124  
+
+  FINAL Q-TABLE:
+  State               INC          DEC          NOP Best
+  LOW            +0.30975     +0.00000     +0.00000  increase_difficulty
+  MODERATE       +0.00000     +0.00000     +0.00000  increase_difficulty
+  HIGH           +0.00000     +0.00000     +0.00000  increase_difficulty
+
+  OPTIMAL POLICY:
+    LOW        -> increase_difficulty
+    MODERATE   -> decrease_difficulty
+    HIGH       -> no_change
+
+  ACTION COUNTS:
+    increase_difficulty: 7
+
+  DIFFICULTY REDUCTION EVENTS:
+
+ALL 7 TESTS PASSED OK

@@ -5,6 +5,12 @@ pandas>=2.0.0
 numpy>=1.26.0
 streamlit>=1.32.0
 requests>=2.31.0
-# Optional — only needed for production LSTM training
-# torch>=2.2.0
-# transformers>=4.38.0
+# ── NLP / Transformer module ─────────────────────────────────────────────────
+# Core transformer library (BERT, RoBERTa, DistilBERT)
+transformers>=4.38.0
+# Inference backend — CPU-only build (smaller download, ~200 MB)
+torch>=2.2.0
+# Sentence tokenisation used by some HuggingFace tokenizers
+sentencepiece>=0.1.99
+# Protobuf support for tokenizer configs
+protobuf>=3.20.0
